@@ -65,16 +65,15 @@
                 }
             };
 
-            // Kamera starten
+            // Kamera starten im Foto-Modus
             cameraButton.onclick = async function() {
                 try {
-                    // Sicherstellen, dass die Kamera verfügbar ist
                     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                         alert("Die Kamera-API wird von diesem Gerät nicht unterstützt.");
                         return;
                     }
 
-                    // Konfiguration für den Kamerazugriff
+                    // Kamera im Foto-Modus konfigurieren
                     const constraints = {
                         video: {
                             facingMode: "environment" // Rückkamera bevorzugen
@@ -83,9 +82,25 @@
 
                     // Kamera-Stream anfordern
                     const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                    video.srcObject = stream;  // Stream im Video-Element anzeigen
-                    video.style.display = "block";  // Video sichtbar machen
+                    video.srcObject = stream; // Stream im Video-Element anzeigen
+                    video.style.display = "block"; // Video sichtbar machen
 
+                    // QR Code Erkennung im Foto-Modus aktivieren
+                    const html5QrCode = new Html5Qrcode("video");
+                    html5QrCode.start(
+                        { facingMode: "environment" }, // Kamera-Modus (Umgebungskamera)
+                        {
+                            fps: 10, // Verlangsame die FPS für bessere Erkennung von QR-Codes
+                            qrbox: { width: 250, height: 250 }, // Bereich für den QR-Code
+                        },
+                        (decodedText, decodedResult) => {
+                            // QR-Code gefunden, hier kannst du etwas tun, z.B. den QR-Code anzeigen
+                            alert("QR-Code erkannt: " + decodedText);
+                        },
+                        (errorMessage) => {
+                            console.error("Fehler bei der QR-Code-Erkennung: ", errorMessage);
+                        }
+                    );
                 } catch (error) {
                     console.error("Fehler beim Kamerazugriff:", error);
 
