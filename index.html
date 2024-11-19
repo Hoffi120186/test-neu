@@ -79,6 +79,15 @@
                         return;
                     }
 
+                    // Vollbildmodus aktivieren
+                    video.style.position = "fixed";
+                    video.style.top = 0;
+                    video.style.left = 0;
+                    video.style.width = "100vw";
+                    video.style.height = "100vh";
+                    video.style.zIndex = 1000;
+
+                    // Kamera-Stream starten
                     const stream = await navigator.mediaDevices.getUserMedia({
                         video: {
                             facingMode: "environment" // Rückkamera bevorzugt
@@ -86,6 +95,28 @@
                     });
 
                     video.srcObject = stream;
+
+                    // QR-Code Scanner aktivieren
+                    const html5QrCode = new Html5Qrcode("video");
+
+                    // QR-Code scannen
+                    html5QrCode.start(
+                        { facingMode: "environment" }, 
+                        {
+                            fps: 10, 
+                            qrbox: 250 
+                        },
+                        (decodedText, decodedResult) => {
+                            // Wenn QR-Code erkannt wird
+                            console.log(decodedText);
+                            window.location.href = decodedText; // Weiterleiten zur URL aus dem QR-Code
+                        },
+                        (errorMessage) => {
+                            // Optional: Fehlerbehandlung
+                            console.warn(errorMessage);
+                        }
+                    );
+
                 } catch (error) {
                     console.error("Kamera-Zugriff fehlgeschlagen:", error);
                     alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
