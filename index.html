@@ -6,6 +6,7 @@
     <title>QR-Code Scanner</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
+    <!-- Sicherstellen, dass die Bibliothek korrekt geladen wird -->
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
@@ -87,7 +88,7 @@
 
                     // QR Code Erkennung im Foto-Modus aktivieren
                     const html5QrCode = new Html5Qrcode("video");
-                    html5QrCode.start(
+                    await html5QrCode.start(
                         { facingMode: "environment" }, // Kamera-Modus (Umgebungskamera)
                         {
                             fps: 10, // Verlangsame die FPS für bessere Erkennung von QR-Codes
