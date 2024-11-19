@@ -80,10 +80,11 @@
 
                     video.srcObject = stream;
 
-                    // Start QR-Code-Erkennung nach Kamerastart
-                    const track = stream.getVideoTracks()[0];
-                    const imageCapture = new ImageCapture(track);
-                    startQRCodeDetection();
+                    // Warten, bis das Video bereit ist
+                    video.onloadedmetadata = () => {
+                        video.play();
+                        startQRCodeDetection();
+                    };
                 } catch (error) {
                     console.error("Kamera-Zugriff fehlgeschlagen:", error);
                     alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
@@ -92,9 +93,10 @@
 
             // QR-Code-Erkennung im Video-Stream
             function startQRCodeDetection() {
-                // Setzt die Größe des Canvas auf die Größe des Videos
                 const videoWidth = video.videoWidth;
                 const videoHeight = video.videoHeight;
+
+                // Setzt die Größe des Canvas auf die Video-Größe
                 canvas.width = videoWidth;
                 canvas.height = videoHeight;
 
