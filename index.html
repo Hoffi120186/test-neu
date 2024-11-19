@@ -48,10 +48,10 @@
         </div>
     </div>
 
-    <!-- Einsatzabbruch Button (unten rechts) -->
+    <!-- Einsatzabbruch Button -->
     <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
 
-    <!-- Stream beenden Button -->
+    <!-- Stream beenden Button (nicht sichtbar) -->
     <button id="stopButton" style="display:none;">Stream beenden</button>
 
     <script>
@@ -114,16 +114,23 @@
                 }
             };
 
-            // Stream beenden
-            stopButton.onclick = function() {
+            // Einsatzabbruch Button übernimmt beide Funktionen
+            const einsatzabbruchButton = document.getElementById("einsatzabbruchButton");
+            einsatzabbruchButton.onclick = function(event) {
+                event.preventDefault();  // Verhindert den Standard-Linkverhalten
+
                 if (currentStream) {
+                    // Stream stoppen
                     const tracks = currentStream.getTracks();
-                    tracks.forEach(track => track.stop()); // Stoppt alle Tracks im Stream
-                    video.style.display = "none"; // Video ausblenden
-                    stopButton.style.display = "none"; // Button ausblenden
-                    cameraButton.style.display = "inline-block"; // Kamera-Button wieder anzeigen
-                    alert("Stream wurde beendet.");
+                    tracks.forEach(track => track.stop());
+                    video.style.display = "none";
+                    stopButton.style.display = "none";  // Stoppt den "Stream beenden"-Button
+                    cameraButton.style.display = "inline-block";  // Zeigt den "Kamera scannen"-Button an
+                    alert("Einsatz abgebrochen und Stream beendet.");
                 }
+
+                // Navigation zur Startseite
+                window.location.href = "index.html";
             };
 
             // QR-Code-Erkennung im Video-Stream
@@ -238,38 +245,56 @@
         #cameraButton {
             padding: 25px 45px;
             font-size: 2em;
-            background-color: rgb(75, 78, 119);
+            background-color: #2ecc71;
             color: white;
             border: none;
             border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        #stopButton {
-            padding: 15px 25px;
+        #cameraButton:hover {
+            background-color: #27ae60;
+        }
+
+        #menuModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            margin: 100px auto;
+        }
+
+        .close {
+            color: #aaa;
             font-size: 1.5em;
-            background-color: rgb(244, 67, 54);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
-            cursor: pointer;
-            display: inline-block;
-            margin-left: 10px; /* Abstand zum Einsatzabbruch Button */
+            font-weight: bold;
+            float: right;
         }
 
-        #stopButton:hover {
-            background-color: rgb(211, 47, 47);
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         /* Einsatzabbruch Button */
         #einsatzabbruchButton {
             position: fixed;
             bottom: 20px;
-            right: 120px; /* Button rechts unten */
+            right: 20px;
             padding: 15px 30px;
             background-color: #e74c3c;
             color: white;
@@ -281,6 +306,25 @@
         }
 
         #einsatzabbruchButton:hover {
+            background-color: #c0392b;
+        }
+
+        /* Stream beenden Button */
+        #stopButton {
+            position: fixed;
+            bottom: 20px;
+            right: 120px;
+            padding: 15px 30px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #stopButton:hover {
             background-color: #c0392b;
         }
     </style>
