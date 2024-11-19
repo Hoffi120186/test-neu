@@ -48,6 +48,9 @@
         </div>
     </div>
 
+    <!-- Einsatzabbruch Button (unten rechts) -->
+    <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const cameraButton = document.getElementById("cameraButton");
@@ -263,6 +266,25 @@
         .modal-content a:hover {
             background-color: rgb(75, 78, 119); /* Hover-Effekt */
             color: white;
+        }
+
+        /* Einsatzabbruch Button */
+        #einsatzabbruchButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #einsatzabbruchButton:hover {
+            background-color: #c0392b;
         }
     </style>
 
