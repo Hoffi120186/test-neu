@@ -3,50 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zentrierte Buttons</title>
+    <title>Buttons anzeigen</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Grundlayout */
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Vollbildhöhe */
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-        }
-
         /* Button-Styling */
         .btn {
-            width: 80%; /* Automatisch skalieren für kleinere Bildschirme */
-            max-width: 400px; /* Begrenze die maximale Breite */
-            padding: 20px;
-            margin: 10px;
+            padding: 50px 30px;
             background-color: rgb(75, 78, 119);
             color: aliceblue;
-            font-size: 20px;
+            font-size: 30px;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            text-align: center;
-            border: none;
-            border-radius: 10px;
+            margin: 10px;
             cursor: pointer;
+            transition: all 0.3s ease;
             box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            position: relative;
+            text-align: center;
         }
-
-        .btn:hover {
-            background-color: rgb(100, 100, 150);
-            transform: scale(1.05);
+        .btn:not(#btnCountdown1):not(#btnCountdown2)::after {
+            content: "⬇ Weitere Informationen";
+            display: block;
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+            margin-top: 10px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 10px;
+            animation: slowBlinkText 2s infinite;
         }
-
-        .hidden {
-            display: none;
+        @keyframes slowBlinkText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
-
-        /* Countdown-Anzeige */
+        .btn:hover { animation: blink 2s infinite; }
+        @keyframes blink {
+            0%, 100% { background-color: rgb(75, 78, 119); }
+            50% { background-color: rgb(100, 100, 150); }
+        }
+        .hidden { display: none; }
         .countdown {
             font-weight: bold;
             font-size: 35px;
@@ -54,34 +50,11 @@
             animation: countdownAnim 1s infinite;
             visibility: hidden;
         }
-
         @keyframes countdownAnim {
             0% { transform: scale(1); color: #ff6347; }
             50% { transform: scale(1.2); color: #ff4500; }
             100% { transform: scale(1); color: #ff6347; }
         }
-
-        /* Einsatzabbruch-Button */
-        #einsatzabbruchButton {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2em;
-            text-decoration: none;
-            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-        }
-
-        #einsatzabbruchButton:hover {
-            background-color: #c0392b;
-        }
-
-        /* Modal für Bild */
         #modal {
             display: none;
             position: fixed;
@@ -90,20 +63,19 @@
             top: 0;
             width: 100%;
             height: 100%;
+            overflow: auto;
             background-color: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
         }
-
         #modalContent {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
         }
-
         #VU_Bauch {
-            width: 90%;
+            width: 100%;
             max-width: 600px;
             height: auto;
         }
@@ -111,7 +83,6 @@
 </head>
 <body>
 
-<!-- Buttons -->
 <button id="btn1" class="btn">Patient M 38 Jahre alt. Patient klagt über starke Bauchschmerzen.</button>
 <button id="btn2" class="btn hidden">Der Patient gibt an, dass die Schmerzen durch den Aufprall verursacht wurden.</button>
 <button id="btnCountdown1" class="btn hidden">Sofortmaßnahme einleiten? ja: <span id="countdown1" class="countdown">30</span></button>
@@ -119,16 +90,12 @@
 <button id="btn3" class="btn hidden">Sichtungskategorie wählen und zum nächsten Patienten!</button>
 <button id="btn4" class="btn hidden">Von vorne beginnen</button>
 
-<!-- Modal für Bildanzeige -->
 <div id="modal">
     <div id="modalContent">
         <span id="closeModal" style="cursor: pointer; font-size: 35px; font-weight: bold;">× Schließen</span>
         <img id="VU Bauch" src="VU Bauch.jpeg" alt="VU Bauch">
     </div>
 </div>
-
-<!-- Einsatzabbruch Button -->
-<a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
 
 <script>
     let countdownIntervals = {};
@@ -194,7 +161,7 @@
         toggleButtons("btn3", "btn4");
     });
     document.getElementById("btn4").addEventListener("click", function() {
-        window.location.href = "index.html";
+        resetAll();
     });
     document.getElementById("VU Bauch").addEventListener("click", function() {
         document.getElementById("modal").style.display = "none";
