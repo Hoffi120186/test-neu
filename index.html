@@ -21,8 +21,7 @@
         <div class="camera-container">
             <button id="cameraButton">Kamera öffnen</button>
         </div>
-        <!-- QR-Code Scanner Bereich -->
-        <div id="qr-reader" style="width: 100%; max-width: 400px; margin: auto; display: none;"></div>
+        <video id="video" autoplay playsinline style="display:none;"></video>
     </main>
 
     <!-- Modal für Menü -->
@@ -47,58 +46,59 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const cameraButton = document.getElementById("cameraButton");
-            const qrReaderDiv = document.getElementById("qr-reader");
+            const video = document.getElementById("video");
+
             const menuButton = document.getElementById("menuButton");
             const menuModal = document.getElementById("menuModal");
             const closeButton = document.querySelector(".close");
 
-            let html5QrCode; // Variable für den QR-Code-Scanner
-
             // Menü öffnen und schließen
-            menuButton.addEventListener("click", () => {
+            menuButton.onclick = function() {
                 menuModal.style.display = "block";
-            });
-
-            closeButton.addEventListener("click", () => {
+            };
+            closeButton.onclick = function() {
                 menuModal.style.display = "none";
-            });
-
-            window.addEventListener("click", (event) => {
-                if (event.target === menuModal) {
+            };
+            window.onclick = function(event) {
+                if (event.target == menuModal) {
                     menuModal.style.display = "none";
                 }
-            });
+            };
 
-            // Kamera öffnen und QR-Scanner starten
-            cameraButton.addEventListener("click", async () => {
+            // Kamera starten
+            cameraButton.onclick = async function() {
                 try {
-                    qrReaderDiv.style.display = "block"; // QR-Reader sichtbar machen
-
-                    // QR-Code-Reader initialisieren, falls noch nicht vorhanden
-                    if (!html5QrCode) {
-                        html5QrCode = new Html5Qrcode("qr-reader");
+                    // Sicherstellen, dass die Kamera verfügbar ist
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        alert("Die Kamera-API wird von diesem Gerät nicht unterstützt.");
+                        return;
                     }
 
-                    await html5QrCode.start(
-                        { facingMode: "environment" }, // Rückkamera bevorzugt
-                        {
-                            fps: 10, // Scans pro Sekunde
-                            qrbox: { width: 250, height: 250 } // QR-Code-Bereich
-                        },
-                        qrCodeMessage => {
-                            alert(`QR-Code erkannt: ${qrCodeMessage}`);
-                            html5QrCode.stop(); // Scanner stoppen
-                            qrReaderDiv.style.display = "none"; // QR-Reader ausblenden
-                        },
-                        errorMessage => {
-                            console.warn(`QR-Code-Fehler: ${errorMessage}`);
+                    // Konfiguration für den Kamerazugriff
+                    const constraints = {
+                        video: {
+                            facingMode: "environment" // Rückkamera bevorzugen
                         }
-                    );
+                    };
+
+                    // Kamera-Stream anfordern
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    video.srcObject = stream;  // Stream im Video-Element anzeigen
+                    video.style.display = "block";  // Video sichtbar machen
+
                 } catch (error) {
-                    console.error("Kamera-Zugriff fehlgeschlagen:", error);
-                    alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
+                    console.error("Fehler beim Kamerazugriff:", error);
+
+                    // Benutzerfreundliche Fehlermeldungen je nach Fehlerart
+                    if (error.name === "NotAllowedError") {
+                        alert("Kamerazugriff verweigert. Bitte Berechtigungen in den Geräteeinstellungen prüfen.");
+                    } else if (error.name === "NotFoundError") {
+                        alert("Keine Kamera gefunden. Stellen Sie sicher, dass Ihr Gerät über eine Kamera verfügt.");
+                    } else {
+                        alert("Kamera-Zugriff fehlgeschlagen. Fehler: " + error.message);
+                    }
                 }
-            });
+            };
         });
     </script>
 
@@ -121,8 +121,8 @@
             color: white;
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
+            justify-content: center; /* Zentriert den Inhalt horizontal */
+            position: relative; /* Ermöglicht das Positionieren des Menüs absolut */
         }
 
         #menuButton {
@@ -132,7 +132,7 @@
             color: white;
             cursor: pointer;
             position: absolute;
-            left: 20px;
+            left: 20px; /* Positioniert den Menübutton am linken Rand */
         }
 
         #headerImage {
