@@ -6,6 +6,7 @@
     <title>QR-Code Scanner</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
+    <!-- Die html5-qrcode Bibliothek wird hier eingebunden -->
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script> 
 </head>
 <body>
@@ -84,6 +85,12 @@
                     const stream = await navigator.mediaDevices.getUserMedia(constraints);
                     video.srcObject = stream; // Stream im Video-Element anzeigen
                     video.style.display = "block"; // Video sichtbar machen
+
+                    // Warten, bis html5-qrcode vollständig geladen ist
+                    if (typeof Html5Qrcode === "undefined") {
+                        alert("QR-Code Bibliothek nicht verfügbar.");
+                        return;
+                    }
 
                     // QR-Code-Erkennung starten
                     const html5QrCode = new Html5Qrcode("video");
