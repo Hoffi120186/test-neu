@@ -79,6 +79,25 @@
             max-width: 600px;
             height: auto;
         }
+
+        /* Einsatzabbruch Button */
+        #einsatzabbruchButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #einsatzabbruchButton:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +115,9 @@
         <img id="VU Bauch" src="VU Bauch.jpeg" alt="VU Bauch">
     </div>
 </div>
+
+<!-- Einsatzabbruch Button -->
+<a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
 
 <script>
     let countdownIntervals = {};
@@ -161,7 +183,7 @@
         toggleButtons("btn3", "btn4");
     });
     document.getElementById("btn4").addEventListener("click", function() {
-    window.location.href = "index.html";
+        window.location.href = "index.html";
     });
     document.getElementById("VU Bauch").addEventListener("click", function() {
         document.getElementById("modal").style.display = "none";
