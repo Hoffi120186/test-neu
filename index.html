@@ -1,185 +1,60 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR-Code Scanner</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
-    
-    <!-- iOS Home-Button-Anpassung -->
-    <link rel="apple-touch-icon" href="apple-touch-icon.png"> <!-- Pfad zum Icon -->
-    <meta name="apple-mobile-web-app-title" content="QR-Scanner"> <!-- Titel für den Home-Button -->
-    <meta name="apple-mobile-web-app-capable" content="yes"> <!-- Vollbildmodus aktivieren -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!-- Statusleisten-Stil -->
-</head>
-<body>
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 
-    <!-- Menüleiste -->
-    <header>
-        <button id="menuButton">☰ Menü</button>
-        <img src="Logo entwurf1.jpg" alt="Logo entwurf1" id="headerImage">
-    </header>
+<!-- Rest des HTML bleibt unverändert -->
 
-    <!-- Kamera öffnen Hinweis -->
-    <main>
-        <div class="camera-container">
-            <button id="cameraButton">Kamera öffnen</button>
-        </div>
-        <video id="video" autoplay playsinline></video>
-    </main>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const cameraButton = document.getElementById("cameraButton");
+        const captureButton = document.getElementById("captureButton");
+        const video = document.getElementById("video");
+        const photo = document.getElementById("photo");
 
-    <!-- Modal für Menü -->
-    <div id="menuModal" class="modal">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Menü</h2>
-            <ul>
-                <li><a href="patient1.html">Patient1</a></li>
-                <li><a href="patient2.html">Patient2</a></li>
-                <li><a href="patient3.html">Patient3</a></li>
-                <li><a href="patient4.html">Patient4</a></li>
-                <li><a href="patient5.html">Patient5</a></li>
-                <li><a href="patient6.html">Patient6</a></li>
-                <li><a href="patient7.html">Patient7</a></li>
-                <li><a href="Einstellungen.html">Einstellungen</a></li>
-                <li><a href="#about">Über uns</a></li>
-            </ul>
-        </div>
-    </div>
+        const menuButton = document.getElementById("menuButton");
+        const menuModal = document.getElementById("menuModal");
+        const closeButton = document.querySelector(".close");
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const cameraButton = document.getElementById("cameraButton");
-            const video = document.getElementById("video");
+        const html5QrCode = new Html5Qrcode("reader"); // QR-Code-Reader initialisieren
+        let isScanning = false;
 
-            const menuButton = document.getElementById("menuButton");
-            const menuModal = document.getElementById("menuModal");
-            const closeButton = document.querySelector(".close");
-
-            // Menü öffnen und schließen
-            menuButton.onclick = function() {
-                menuModal.style.display = "block";
-            };
-            closeButton.onclick = function() {
+        // Menü öffnen und schließen
+        menuButton.onclick = function() {
+            menuModal.style.display = "block";
+        };
+        closeButton.onclick = function() {
+            menuModal.style.display = "none";
+        };
+        window.onclick = function(event) {
+            if (event.target == menuModal) {
                 menuModal.style.display = "none";
-            };
-            window.onclick = function(event) {
-                if (event.target == menuModal) {
-                    menuModal.style.display = "none";
-                }
-            };
+            }
+        };
 
-            // Kamera starten
-            cameraButton.onclick = async function() {
-                try {
-                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                        alert("Die Kamera-API wird von diesem Gerät nicht unterstützt.");
-                        return;
+        // Kamera starten
+        cameraButton.onclick = async function() {
+            try {
+                if (isScanning) return; // Verhindert mehrfaches Starten
+
+                // QR-Code-Scanner starten
+                await html5QrCode.start(
+                    { facingMode: "environment" }, // Rückkamera bevorzugt
+                    {
+                        fps: 10, // Scans pro Sekunde
+                        qrbox: { width: 250, height: 250 } // QR-Code-Bereich
+                    },
+                    qrCodeMessage => {
+                        alert(`QR-Code erkannt: ${qrCodeMessage}`);
+                        html5QrCode.stop(); // Scanner stoppen
+                        isScanning = false;
+                    },
+                    errorMessage => {
+                        console.warn(`QR-Code-Fehler: ${errorMessage}`);
                     }
-
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: {
-                            facingMode: "environment" // Rückkamera bevorzugt
-                        }
-                    });
-
-                    video.srcObject = stream;
-                } catch (error) {
-                    console.error("Kamera-Zugriff fehlgeschlagen:", error);
-                    alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
-                }
-            };
-        });
-    </script>
-
-    <!-- CSS -->
-    <style>
-        /* Basislayout */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            width: 100%;
-            padding: 20px;
-            background-color: #52576e;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Zentriert den Inhalt horizontal */
-            position: relative; /* Ermöglicht das Positionieren des Menüs absolut */
-        }
-
-        #menuButton {
-            font-size: 1.5em;
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            position: absolute;
-            left: 20px; /* Positioniert den Menübutton am linken Rand */
-        }
-
-        #headerImage {
-            height: 60px;
-        }
-
-        main {
-            margin-top: 20px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .camera-container {
-            background-color: #d3d3d3;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-
-        #cameraButton {
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: rgb(75, 78, 119);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        video {
-            margin-top: 10px;
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
-        }
-    </style>
-
-</body>
-</html>
+                );
+                isScanning = true;
+            } catch (error) {
+                console.error("Kamera-Zugriff fehlgeschlagen:", error);
+                alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
+            }
+        };
+    });
+</script>
