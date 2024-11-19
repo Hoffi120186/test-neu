@@ -21,7 +21,7 @@
         <div class="camera-container">
             <button id="cameraButton">Kamera öffnen</button>
         </div>
-        <video id="video" autoplay playsinline style="display:none;"></video>
+        <video id="video" autoplay playsinline></video>
     </main>
 
     <!-- Modal für Menü -->
@@ -65,7 +65,22 @@
                 }
             };
 
-            // Kamera starten und QR-Code scannen
+            // QR-Code Scanner initialisieren
+            const html5QrCode = new Html5Qrcode("video"); // Referenz zum Video-Element
+
+            // QR-Code Detektion starten
+            function onScanSuccess(decodedText, decodedResult) {
+                console.log(`QR-Code erkannt: ${decodedText}`);
+                // Leite auf die URL weiter, die im QR-Code enthalten ist
+                window.location.href = decodedText; // Weiterleitung zur URL
+            }
+
+            function onScanFailure(error) {
+                // Fehler beim Scannen behandeln
+                console.warn(`QR-Code Scan Fehler: ${error}`);
+            }
+
+            // Kamera starten im Fotomodus
             cameraButton.onclick = async function() {
                 try {
                     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -73,67 +88,34 @@
                         return;
                     }
 
-                    // Kamera-Stream anfordern
-                    const stream = await navigator.mediaDevices.getUserMedia({
+                    // Kamera öffnen im Foto-Modus
+                    const constraints = {
                         video: {
-                            facingMode: "environment" // Rückkamera bevorzugen
+                            facingMode: "environment", // Rückkamera bevorzugen
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
                         }
-                    });
-                    video.srcObject = stream; // Stream im Video-Element anzeigen
-                    video.style.display = "block"; // Video sichtbar machen
+                    };
 
-                    // Sicherstellen, dass html5-qrcode verfügbar ist
-                    if (typeof Html5Qrcode === "undefined") {
-                        alert("QR-Code Bibliothek ist nicht verfügbar.");
-                        return;
-                    }
+                    // Setze Kameraquelle auf das Video-Element
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    video.srcObject = stream;
 
-                    // QR-Code-Erkennung starten
-                    const html5QrCode = new Html5Qrcode("video");
-
-                    // Video-Modus wird gestartet, aber wir scannen nur einmal
+                    // QR-Code Scanner aktivieren
                     html5QrCode.start(
-                        { facingMode: "environment" }, // Kamera-Modus (Umgebungskamera)
+                        { facingMode: "environment" }, 
                         {
-                            fps: 10, // Verlangsame die FPS für bessere Erkennung von QR-Codes
-                            qrbox: { width: 250, height: 250 }, // Bereich für den QR-Code
+                            fps: 10, // Scanner-Frequenz
+                            qrbox: 250, // Größe des QR-Code-Scanners
                         },
-                        (decodedText, decodedResult) => {
-                            // QR-Code gefunden, Weiterleitung zur URL
-                            window.location.href = decodedText; // Leitet zur URL des QR-Codes weiter
-
-                            // Stoppen des Scanners nach erfolgreichem Scan
-                            html5QrCode.stop().then(() => {
-                                video.style.display = "none"; // Verstecke das Video nach dem Scan
-                            }).catch(err => {
-                                console.error("Fehler beim Stoppen des Streams: ", err);
-                            });
-                        },
-                        (errorMessage) => {
-                            console.error("Fehler bei der QR-Code-Erkennung: ", errorMessage);
-                        }
-                    );
-
-                    // Stoppe den Stream nach dem ersten Scan (optional)
-                    setTimeout(() => {
-                        html5QrCode.stop().then(() => {
-                            video.style.display = "none"; // Verstecke das Video nach dem Scan
-                        }).catch(err => {
-                            console.error("Fehler beim Stoppen des Streams: ", err);
-                        });
-                    }, 10000); // Stoppe den Scan nach 10 Sekunden
-
+                        onScanSuccess,
+                        onScanFailure
+                    ).catch(err => {
+                        console.error("Fehler beim Starten des QR-Codes:", err);
+                    });
                 } catch (error) {
-                    console.error("Fehler beim Kamerazugriff:", error);
-
-                    // Benutzerfreundliche Fehlermeldungen je nach Fehlerart
-                    if (error.name === "NotAllowedError") {
-                        alert("Kamerazugriff verweigert. Bitte Berechtigungen in den Geräteeinstellungen prüfen.");
-                    } else if (error.name === "NotFoundError") {
-                        alert("Keine Kamera gefunden. Stellen Sie sicher, dass Ihr Gerät über eine Kamera verfügt.");
-                    } else {
-                        alert("Kamera-Zugriff fehlgeschlagen. Fehler: " + error.message);
-                    }
+                    console.error("Kamera-Zugriff fehlgeschlagen:", error);
+                    alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
                 }
             };
         });
@@ -158,8 +140,8 @@
             color: white;
             display: flex;
             align-items: center;
-            justify-content: center; /* Zentriert den Inhalt horizontal */
-            position: relative; /* Ermöglicht das Positionieren des Menüs absolut */
+            justify-content: center;
+            position: relative;
         }
 
         #menuButton {
@@ -169,7 +151,7 @@
             color: white;
             cursor: pointer;
             position: absolute;
-            left: 20px; /* Positioniert den Menübutton am linken Rand */
+            left: 20px;
         }
 
         #headerImage {
