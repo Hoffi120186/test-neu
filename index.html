@@ -48,7 +48,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             const cameraButton = document.getElementById("cameraButton");
             const qrReaderDiv = document.getElementById("qr-reader");
-
             const menuButton = document.getElementById("menuButton");
             const menuModal = document.getElementById("menuModal");
             const closeButton = document.querySelector(".close");
@@ -56,20 +55,22 @@
             const html5QrCode = new Html5Qrcode("qr-reader"); // QR-Code-Reader initialisieren
 
             // Menü öffnen und schließen
-            menuButton.onclick = function() {
+            menuButton.addEventListener("click", () => {
                 menuModal.style.display = "block";
-            };
-            closeButton.onclick = function() {
+            });
+
+            closeButton.addEventListener("click", () => {
                 menuModal.style.display = "none";
-            };
-            window.onclick = function(event) {
-                if (event.target == menuModal) {
+            });
+
+            window.addEventListener("click", (event) => {
+                if (event.target === menuModal) {
                     menuModal.style.display = "none";
                 }
-            };
+            });
 
             // Kamera starten
-            cameraButton.onclick = async function() {
+            cameraButton.addEventListener("click", async () => {
                 try {
                     qrReaderDiv.style.display = "block"; // QR-Reader sichtbar machen
 
@@ -93,7 +94,7 @@
                     console.error("Kamera-Zugriff fehlgeschlagen:", error);
                     alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
                 }
-            };
+            });
         });
     </script>
 
@@ -116,8 +117,8 @@
             color: white;
             display: flex;
             align-items: center;
-            justify-content: center; /* Zentriert den Inhalt horizontal */
-            position: relative; /* Ermöglicht das Positionieren des Menüs absolut */
+            justify-content: center;
+            position: relative;
         }
 
         #menuButton {
@@ -127,7 +128,7 @@
             color: white;
             cursor: pointer;
             position: absolute;
-            left: 20px; /* Positioniert den Menübutton am linken Rand */
+            left: 20px;
         }
 
         #headerImage {
