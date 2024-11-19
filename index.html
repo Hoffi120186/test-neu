@@ -49,7 +49,7 @@
     </div>
 
     <!-- Button zum Zurück zur Startseite -->
-    <button id="backToIndex" class="back-button">Zurück zur Startseite</button>
+    <button id="backToIndex" class="back-button">Einsatzabbruch</button>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -93,18 +93,6 @@
                         video.play();
                         startQRCodeDetection();
                     };
-
-                    // Video in den Vordergrund stellen und auf Vollbild setzen
-                    video.style.position = 'fixed';
-                    video.style.top = '0';
-                    video.style.left = '0';
-                    video.style.width = '100vw';
-                    video.style.height = '100vh';
-                    video.style.zIndex = '9999'; // Video ganz vorne
-
-                    // Den Rest der Seite unsichtbar machen (optional)
-                    document.querySelector('header').style.display = 'none';
-                    document.querySelector('main').style.display = 'none';
                 } catch (error) {
                     console.error("Kamera-Zugriff fehlgeschlagen:", error);
                     alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
@@ -193,12 +181,13 @@
         }
 
         main {
+     
             margin-top: 20px;
             text-align: center;
             width: 100%;
         }
 
-        .Text-container { 
+        .Text-container{ 
             margin-bottom: 20px;
             font-size: 1.1em;
             color: white; /* Weißer Text */
@@ -234,15 +223,48 @@
             width: 80%;
             max-width: 400px;
             cursor: pointer;
+            position: relative;
         }
 
         video {
+        position: fixed;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+        }
+
+        .modal {
+            display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
             z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .modal-content a {
+            color: rgb(75, 78, 119); /* Buttonfarbe angepasst */
+            font-size: 1.2em;
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content a:hover {
+            background-color: rgb(75, 78, 119); /* Hover-Effekt */
+            color: white;
         }
 
         /* Button für Zurück zur Startseite */
@@ -255,7 +277,7 @@
             background-color: rgb(75, 78, 119);
             color: white;
             border: none;
-            border-radius: 50%;
+            border-radius: 0%;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
