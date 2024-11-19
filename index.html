@@ -6,8 +6,7 @@
     <title>QR-Code Scanner</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
-    <!-- Sicherstellen, dass die Bibliothek korrekt geladen wird -->
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script> 
 </head>
 <body>
 
@@ -86,7 +85,7 @@
                     video.srcObject = stream; // Stream im Video-Element anzeigen
                     video.style.display = "block"; // Video sichtbar machen
 
-                    // QR Code Erkennung im Foto-Modus aktivieren
+                    // QR-Code-Erkennung starten
                     const html5QrCode = new Html5Qrcode("video");
                     await html5QrCode.start(
                         { facingMode: "environment" }, // Kamera-Modus (Umgebungskamera)
