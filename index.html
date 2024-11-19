@@ -79,52 +79,43 @@
 
                     video.srcObject = stream;
 
-                    // Fotomodus aktivieren
+                    // QR-Code-Erkennung im Video-Modus
                     const track = stream.getVideoTracks()[0];
                     const imageCapture = new ImageCapture(track);
-                    captureImage(imageCapture);
+                    startQRCodeDetection();
                 } catch (error) {
                     console.error("Kamera-Zugriff fehlgeschlagen:", error);
                     alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
                 }
             };
 
-            // QR-Code scannen nach dem Foto
-            function captureImage(imageCapture) {
-                imageCapture.takePhoto()
-                    .then(blob => {
-                        const url = URL.createObjectURL(blob);
-                        const img = new Image();
-                        img.src = url;
+            // QR-Code-Erkennung im Video-Stream
+            function startQRCodeDetection() {
+                const canvasContext = canvas.getContext('2d');
+                const videoWidth = video.videoWidth;
+                const videoHeight = video.videoHeight;
+                canvas.width = videoWidth;
+                canvas.height = videoHeight;
 
-                        img.onload = function() {
-                            const ctx = canvas.getContext("2d");
-                            canvas.width = img.width;
-                            canvas.height = img.height;
-                            ctx.drawImage(img, 0, 0);
+                // kontinuierliches Scannen des Videostreams
+                const scanQRCode = () => {
+                    canvasContext.drawImage(video, 0, 0, videoWidth, videoHeight);
 
-                            // QR-Code-Erkennung
-                            scanQRCode();
-                        };
-                    })
-                    .catch(error => {
-                        console.error("Fotoaufnahme fehlgeschlagen:", error);
+                    // QR-Code aus dem Bild auf dem Canvas lesen
+                    const imageData = canvasContext.getImageData(0, 0, videoWidth, videoHeight);
+                    const code = jsQR(imageData.data, videoWidth, videoHeight, {
+                        inversionAttempts: "dontInvert"
                     });
-            }
 
-            function scanQRCode() {
-                const ctx = canvas.getContext("2d");
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const code = jsQR(imageData.data, canvas.width, canvas.height, {
-                    inversionAttempts: "dontInvert"
-                });
+                    if (code) {
+                        alert("QR-Code erkannt! Weiterleitung...");
+                        window.location.href = code.data;  // Weiterleitung zur URL im QR-Code
+                    } else {
+                        requestAnimationFrame(scanQRCode);  // Fortsetzung des Scan-Versuchs
+                    }
+                };
 
-                if (code) {
-                    alert("QR-Code erkannt! Weiterleitung...");
-                    window.location.href = code.data;  // Weiterleitung zur URL im QR-Code
-                } else {
-                    alert("Kein QR-Code gefunden.");
-                }
+                requestAnimationFrame(scanQRCode); // Starte das kontinuierliche Scannen
             }
         });
     </script>
