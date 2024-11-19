@@ -23,7 +23,7 @@
                  Weiteres vorgehen nach eigenen Vorgaben.</p>
         </div>
         <div class="camera-container">
-            <button id="cameraButton">Patienten scannen</button>
+            <button id="cameraButton" class="old-style-button">Patienten scannen</button>
         </div>
         <video id="video" autoplay playsinline style="display:none;"></video>
         <canvas id="canvas" style="display:none;"></canvas>
@@ -51,13 +51,9 @@
     <!-- Einsatzabbruch Button -->
     <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
 
-    <!-- Stream beenden Button (nicht sichtbar) -->
-    <button id="stopButton" style="display:none;">Stream beenden</button>
-
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const cameraButton = document.getElementById("cameraButton");
-            const stopButton = document.getElementById("stopButton");
             const video = document.getElementById("video");
             const canvas = document.getElementById("canvas");
             const canvasContext = canvas.getContext('2d');
@@ -85,7 +81,6 @@
                 try {
                     // Button ausblenden
                     cameraButton.style.display = "none";
-                    stopButton.style.display = "inline-block";
 
                     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                         alert("Die Kamera-API wird von diesem Gerät nicht unterstützt.");
@@ -123,8 +118,7 @@
                     // Stream stoppen
                     const tracks = currentStream.getTracks();
                     tracks.forEach(track => track.stop());
-                    video.style.display = "none";
-                    stopButton.style.display = "none";  // Stoppt den "Stream beenden"-Button
+                    video.style.display = "none";  // Video stoppen
                     cameraButton.style.display = "inline-block";  // Zeigt den "Kamera scannen"-Button an
                     alert("Einsatz abgebrochen und Stream beendet.");
                 }
@@ -243,9 +237,9 @@
         }
 
         #cameraButton {
-            padding: 25px 45px;
-            font-size: 2em;
-            background-color: #2ecc71;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            background-color: #3498db;
             color: white;
             border: none;
             border-radius: 10px;
@@ -254,7 +248,7 @@
         }
 
         #cameraButton:hover {
-            background-color: #27ae60;
+            background-color: #2980b9;
         }
 
         #menuModal {
@@ -306,25 +300,6 @@
         }
 
         #einsatzabbruchButton:hover {
-            background-color: #c0392b;
-        }
-
-        /* Stream beenden Button */
-        #stopButton {
-            position: fixed;
-            bottom: 20px;
-            right: 120px;
-            padding: 15px 30px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2em;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        #stopButton:hover {
             background-color: #c0392b;
         }
     </style>
