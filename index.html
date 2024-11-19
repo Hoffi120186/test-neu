@@ -48,9 +48,6 @@
         </div>
     </div>
 
-    <!-- Button zum Zurück zur Startseite -->
-    <button id="backToIndex" class="back-button">Einsatzabbruch</button>
-
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const cameraButton = document.getElementById("cameraButton");
@@ -132,11 +129,6 @@
 
                 requestAnimationFrame(scanQRCode); // Starte das kontinuierliche Scannen
             }
-
-            // Weiterleitung zur Index-Seite, wenn der Button geklickt wird
-            document.getElementById("backToIndex").onclick = function() {
-                window.location.href = "index.html";  // Weiterleitung zur Index-Seite
-            };
         });
     </script>
 
@@ -181,7 +173,6 @@
         }
 
         main {
-     
             margin-top: 20px;
             text-align: center;
             width: 100%;
@@ -200,7 +191,7 @@
             transition: all 0.3s ease; /* Übergangseffekt bei Hover */
         }
 
-        .Text-container:hover {
+        .Text-container:hover{
             background-color: #52576e; /* Hintergrundfarbe beim Hover */
             color: #fff; /* Textfarbe beim Hover */
             transform: scale(1.05); /* Leicht vergrößern beim Hover */
@@ -223,21 +214,22 @@
             width: 80%;
             max-width: 400px;
             cursor: pointer;
-            position: relative;
         }
 
         video {
-        position: fixed;
-            margin-top: 10px;
-            width: 100%;
-            max-width: 400px;
-            height: auto;
+            position: fixed; /* Fixed position für Vollbild */
+            top: 50%; /* Vertikale Zentrierung */
+            left: 50%; /* Horizontale Zentrierung */
+            transform: translate(-50%, -50%); /* Verschieben, um das Video exakt zu zentrieren */
+            width: 100vw; /* Volle Breite */
+            height: 100vh; /* Volle Höhe */
+            z-index: 9999; /* Vor allem anderen */
         }
 
         .modal {
             display: none;
             position: fixed;
-            z-index: 9999;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
@@ -265,25 +257,6 @@
         .modal-content a:hover {
             background-color: rgb(75, 78, 119); /* Hover-Effekt */
             color: white;
-        }
-
-        /* Button für Zurück zur Startseite */
-        .back-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            font-size: 1.2em;
-            background-color: rgb(75, 78, 119);
-            color: white;
-            border: none;
-            border-radius: 0%;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .back-button:hover {
-            background-color: rgb(60, 63, 93);
         }
     </style>
 
