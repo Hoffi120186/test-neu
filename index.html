@@ -17,8 +17,13 @@
 
     <!-- Kamera öffnen Hinweis -->
     <main>
+        <div class="Text-container">
+            <p>VU mit mehreren PKW und Personen. Bei Eintreffen an der Einsatzstelle zeigt sich ein Szenario von mehreren Verletzten. Diese können im und um din PKW verteilen.
+                 Die Einsatzstelle ist momentan keinen weiteren Gefahren ausgesetzt und man kann die Einsatzstelle begehen. 
+                 Weiteres vorgehen nach eigenen Vorgaben.</p>
+        </div>
         <div class="camera-container">
-            <button id="cameraButton">Kamera öffnen</button>
+            <button id="cameraButton">Patienten scannen</button>
         </div>
         <video id="video" autoplay playsinline></video>
         <canvas id="canvas" style="display:none;"></canvas>
@@ -42,6 +47,9 @@
             </ul>
         </div>
     </div>
+
+    <!-- Button zum Zurück zur Startseite -->
+    <button id="backToIndex" class="back-button">Einsatzabbruch</button>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -124,6 +132,11 @@
 
                 requestAnimationFrame(scanQRCode); // Starte das kontinuierliche Scannen
             }
+
+            // Weiterleitung zur Index-Seite, wenn der Button geklickt wird
+            document.getElementById("backToIndex").onclick = function() {
+                window.location.href = "index.html";  // Weiterleitung zur Index-Seite
+            };
         });
     </script>
 
@@ -139,6 +152,7 @@
             align-items: center;
             margin: 0;
             padding: 0;
+            background-color: #d3d3d3;
         }
 
         header {
@@ -167,9 +181,29 @@
         }
 
         main {
+     
             margin-top: 20px;
             text-align: center;
             width: 100%;
+        }
+
+        .Text-container{ 
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: white; /* Weißer Text */
+            padding: 10px;
+            border: 2px solid #f71717; /* Rahmen mit passender Farbe */
+            border-radius: 10px; /* Abgerundete Ecken */
+            background-color: #291a1a; /* Hintergrundfarbe für den Textbereich */
+            width: 80%;
+            max-width: 600px;
+            transition: all 0.3s ease; /* Übergangseffekt bei Hover */
+        }
+
+        .Text-container:hover {
+            background-color: #52576e; /* Hintergrundfarbe beim Hover */
+            color: #fff; /* Textfarbe beim Hover */
+            transform: scale(1.05); /* Leicht vergrößern beim Hover */
         }
 
         .camera-container {
@@ -180,13 +214,16 @@
         }
 
         #cameraButton {
-            padding: 10px 20px;
-            font-size: 1em;
+            padding: 25px 45px;
+            font-size: 2em;
             background-color: rgb(75, 78, 119);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
             cursor: pointer;
+            position: relative;
         }
 
         video {
@@ -199,7 +236,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
@@ -213,6 +250,39 @@
             margin: 5% auto;
             padding: 20px;
             border-radius: 10px;
+        }
+
+        .modal-content a {
+            color: rgb(75, 78, 119); /* Buttonfarbe angepasst */
+            font-size: 1.2em;
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content a:hover {
+            background-color: rgb(75, 78, 119); /* Hover-Effekt */
+            color: white;
+        }
+
+        /* Button für Zurück zur Startseite */
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            font-size: 1.2em;
+            background-color: rgb(75, 78, 119);
+            color: white;
+            border: none;
+            border-radius: 0%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            background-color: rgb(60, 63, 93);
         }
     </style>
 
