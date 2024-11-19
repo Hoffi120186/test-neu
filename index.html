@@ -52,7 +52,7 @@
             const menuModal = document.getElementById("menuModal");
             const closeButton = document.querySelector(".close");
 
-            const html5QrCode = new Html5Qrcode("qr-reader"); // QR-Code-Reader initialisieren
+            let html5QrCode; // Variable für den QR-Code-Scanner
 
             // Menü öffnen und schließen
             menuButton.addEventListener("click", () => {
@@ -69,12 +69,16 @@
                 }
             });
 
-            // Kamera starten
+            // Kamera öffnen und QR-Scanner starten
             cameraButton.addEventListener("click", async () => {
                 try {
                     qrReaderDiv.style.display = "block"; // QR-Reader sichtbar machen
 
-                    // QR-Code-Scanner starten
+                    // QR-Code-Reader initialisieren, falls noch nicht vorhanden
+                    if (!html5QrCode) {
+                        html5QrCode = new Html5Qrcode("qr-reader");
+                    }
+
                     await html5QrCode.start(
                         { facingMode: "environment" }, // Rückkamera bevorzugt
                         {
