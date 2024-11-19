@@ -18,9 +18,9 @@
     <!-- Kamera öffnen Hinweis -->
     <main>
         <div class="Text-container">
-            <p>VU mit mehreren PKW und Personen. Bei Eintreffen an der Einsatzstelle zeigt sich ein Szenario von mehreren Verletzten. Diese können im und um din PKW verteilen.
-                 Die Einsatzstelle ist momentan keinen weiteren Gefahren ausgesetzt und man kann die Einsatzstelle begehen. 
-                 Weiteres vorgehen nach eigenen Vorgaben.</p>
+            <p>VU mit mehreren PKW und Personen. Bei Eintreffen an der Einsatzstelle zeigt sich ein Szenario von mehreren Verletzten. Diese können im und um den PKW verteilt sein.
+                Die Einsatzstelle ist momentan keinen weiteren Gefahren ausgesetzt und man kann die Einsatzstelle begehen. 
+                Weiteres Vorgehen nach eigenen Vorgaben.</p>
         </div>
         <div class="camera-container">
             <button id="cameraButton">Patienten scannen</button>
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <!-- Einsatzabbruch Button (unten rechts) -->
+    <!-- Einsatzabbruch Button -->
     <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
 
     <script>
@@ -187,23 +187,16 @@
             width: 100%;
         }
 
-        .Text-container{ 
+        .Text-container {
             margin-bottom: 20px;
-            font-size: 1.1em;
-            color: white; /* Weißer Text */
-            padding: 10px;
-            border: 2px solid #f71717; /* Rahmen mit passender Farbe */
-            border-radius: 10px; /* Abgerundete Ecken */
-            background-color: #291a1a; /* Hintergrundfarbe für den Textbereich */
+            font-size: 1.2em;
+            color: white;
+            padding: 15px;
+            border: 2px solid #f71717;
+            border-radius: 10px;
+            background-color: #291a1a;
             width: 80%;
             max-width: 600px;
-            transition: all 0.3s ease; /* Übergangseffekt bei Hover */
-        }
-
-        .Text-container:hover{
-            background-color: #52576e; /* Hintergrundfarbe beim Hover */
-            color: #fff; /* Textfarbe beim Hover */
-            transform: scale(1.05); /* Leicht vergrößern beim Hover */
         }
 
         .camera-container {
@@ -214,7 +207,7 @@
         }
 
         #cameraButton {
-            padding: 25px 45px;
+            padding: 30px 50px;
             font-size: 2em;
             background-color: rgb(75, 78, 119);
             color: white;
@@ -226,46 +219,13 @@
         }
 
         video {
-            position: absolute; /* Fixed Position zum Starten */
-            top: 50%; /* Vertikal zentrieren */
-            left: 50%; /* Horizontal zentrieren */
-            transform: translate(-50%, -50%); /* Zentriert das Video */
-            width: 100vw; /* Volle Breite */
-            height: 100vh; /* Volle Höhe */
-            z-index: 9999; /* Über allem */
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .modal-content a {
-            color: rgb(75, 78, 119); /* Buttonfarbe angepasst */
-            font-size: 1.2em;
-            padding: 10px;
-            display: block;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .modal-content a:hover {
-            background-color: rgb(75, 78, 119); /* Hover-Effekt */
-            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
         }
 
         /* Einsatzabbruch Button */
@@ -273,12 +233,12 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 10px 20px;
+            padding: 15px 30px;
             background-color: #e74c3c;
             color: white;
             border: none;
             border-radius: 50px;
-            font-size: 1.2em;
+            font-size: 1.3em;
             cursor: pointer;
             text-decoration: none;
         }
