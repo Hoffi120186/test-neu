@@ -81,6 +81,24 @@
             max-width: 600px;
             height: auto;
         }
+         /* Einsatzabbruch Button */
+         #einsatzabbruchButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #einsatzabbruchButton:hover {
+            background-color: #c0392b;
+        }
 </style>
 </head>
 <body>
@@ -111,7 +129,7 @@
    <img id="VU Fraktur Arm" src="VU Fraktur Arm.jpg" alt="VU Fraktur Arm">
   </div>
  </div>
-
+ <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
  <script>
  let countdownIntervals = {};
 
