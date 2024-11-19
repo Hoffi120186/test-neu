@@ -48,6 +48,7 @@
             const cameraButton = document.getElementById("cameraButton");
             const video = document.getElementById("video");
             const canvas = document.getElementById("canvas");
+            const canvasContext = canvas.getContext('2d');
             const menuButton = document.getElementById("menuButton");
             const menuModal = document.getElementById("menuModal");
             const closeButton = document.querySelector(".close");
@@ -79,7 +80,7 @@
 
                     video.srcObject = stream;
 
-                    // QR-Code-Erkennung im Video-Modus
+                    // Start QR-Code-Erkennung nach Kamerastart
                     const track = stream.getVideoTracks()[0];
                     const imageCapture = new ImageCapture(track);
                     startQRCodeDetection();
@@ -91,22 +92,26 @@
 
             // QR-Code-Erkennung im Video-Stream
             function startQRCodeDetection() {
-                const canvasContext = canvas.getContext('2d');
+                // Setzt die Größe des Canvas auf die Größe des Videos
                 const videoWidth = video.videoWidth;
                 const videoHeight = video.videoHeight;
                 canvas.width = videoWidth;
                 canvas.height = videoHeight;
 
-                // kontinuierliches Scannen des Videostreams
+                // Funktion zur kontinuierlichen QR-Code-Erkennung
                 const scanQRCode = () => {
+                    // Zeichnet das aktuelle Video-Frame in das Canvas
                     canvasContext.drawImage(video, 0, 0, videoWidth, videoHeight);
 
-                    // QR-Code aus dem Bild auf dem Canvas lesen
+                    // Holt die Bilddaten vom Canvas
                     const imageData = canvasContext.getImageData(0, 0, videoWidth, videoHeight);
+
+                    // QR-Code-Erkennung mit jsQR
                     const code = jsQR(imageData.data, videoWidth, videoHeight, {
                         inversionAttempts: "dontInvert"
                     });
 
+                    // Wenn ein QR-Code erkannt wird
                     if (code) {
                         alert("QR-Code erkannt! Weiterleitung...");
                         window.location.href = code.data;  // Weiterleitung zur URL im QR-Code
