@@ -6,7 +6,6 @@
     <title>QR-Code Scanner</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
-    <!-- HTML5 QR-Code Bibliothek -->
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
@@ -102,20 +101,27 @@
                         (decodedText, decodedResult) => {
                             // QR-Code gefunden, Weiterleitung zur URL
                             window.location.href = decodedText; // Leitet zur URL des QR-Codes weiter
+
+                            // Stoppen des Scanners nach erfolgreichem Scan
+                            html5QrCode.stop().then(() => {
+                                video.style.display = "none"; // Verstecke das Video nach dem Scan
+                            }).catch(err => {
+                                console.error("Fehler beim Stoppen des Streams: ", err);
+                            });
                         },
                         (errorMessage) => {
                             console.error("Fehler bei der QR-Code-Erkennung: ", errorMessage);
                         }
                     );
 
-                    // Stoppe den Stream nach dem ersten Scan
+                    // Stoppe den Stream nach dem ersten Scan (optional)
                     setTimeout(() => {
                         html5QrCode.stop().then(() => {
                             video.style.display = "none"; // Verstecke das Video nach dem Scan
                         }).catch(err => {
                             console.error("Fehler beim Stoppen des Streams: ", err);
                         });
-                    }, 5000); // Stoppe den Scan nach 5 Sekunden
+                    }, 10000); // Stoppe den Scan nach 10 Sekunden
 
                 } catch (error) {
                     console.error("Fehler beim Kamerazugriff:", error);
