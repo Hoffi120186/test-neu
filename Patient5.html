@@ -81,6 +81,24 @@
             max-width: 600px;
             height: auto;
         }
+            /* Einsatzabbruch Button */
+            #einsatzabbruchButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #einsatzabbruchButton:hover {
+            background-color: #c0392b;
+        }
  </style>
  <button id="btn1" class="btn">
   Patientin W 22 Jahre alt. Die Patientin klagt über Kopfschmerzen und kann sich an nichts erinnern. Ihr Nacken tut auch weh.
@@ -114,6 +132,7 @@
    <img id="VU SHT" src="VU SHT.jpg" alt="VU SHT">
   </div>
  </div>
+ <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
  <script>
   let countdownIntervals = {};
         function toggleButtons(currentButtonId, nextButtonId) {
@@ -174,9 +193,8 @@
             toggleButtons("btn3", "btn4");
         });
         document.getElementById("btn4").addEventListener("click", function() {
-    window.location.href = "index.html";
-});
-
+            resetAll();
+        });
         // Modal schließen, wenn auf das Bild oder den Schließen-Button geklickt wird
         document.getElementById("VU SHT").addEventListener("click", function() {
             document.getElementById("modal").style.display = "none";
