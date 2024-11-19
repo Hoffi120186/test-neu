@@ -85,6 +85,24 @@
             height: auto;
             cursor: pointer; /* Zeigt an, dass das Bild anklickbar ist */
         }
+            /* Einsatzabbruch Button */
+            #einsatzabbruchButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #einsatzabbruchButton:hover {
+            background-color: #c0392b;
+        }
  </style>
  <button id="btn1" class="btn">
   Patient M ca. 40 Jahre alt. Der Patient liegt auf dem Rücken neben dem Fahrzeug. Und reagiert nicht auf Ansprache, aber auf Schmerzreiz.
@@ -118,6 +136,7 @@
    <img id="VU SHT2" src="VU SHT2.jpg" alt="VU SHT2">
   </div>
  </div>
+ <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
  <script>
   let countdownIntervals = {};
         function toggleButtons(currentButtonId, nextButtonId) {
@@ -178,9 +197,8 @@
             toggleButtons("btn3", "btn4");
         });
         document.getElementById("btn4").addEventListener("click", function() {
-    window.location.href = "index.html";
-});
-
+            resetAll();
+        });
         // Modal schließen, wenn auf das Bild geklickt wird
         document.getElementById("VU SHT2").addEventListener("click", function() {
             document.getElementById("modal").style.display = "none";
