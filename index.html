@@ -5,32 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR-Code Scanner</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <!-- Menüleiste -->
     <header>
         <button id="menuButton">☰ Menü</button>
         <img src="Logo entwurf1.jpg" alt="Logo entwurf1" id="headerImage">
     </header>
 
-    <!-- Hauptinhalt -->
-    <main class="flex-container">
+    <!-- Kamera öffnen Hinweis -->
+    <main>
         <div class="Text-container">
-            <p>
-                VU mit mehreren PKW und Personen. Bei Eintreffen an der Einsatzstelle zeigt sich ein Szenario von mehreren Verletzten. Diese befinden sich in den PKW, können aber auch außerhalb vorgefunden werden. 
-                Die Einsatzstelle ist momentan keinen weiteren Gefahren ausgesetzt und kann begangen werden. Weiteres Vorgehen nach eigenen Vorgaben.
-            </p>
+            <p>VU mit mehreren PKW und Personen. Bei eintreffen an der Einsatzstelle zeigt sich ein Szenario von mehreren Verletzten. Diese befinden sich in den PKW. Können aber auch auserhalb vorgefunden werden.
+                 Die Einsatzstelle ist momentan keinen weiteren Gefahren ausgesetzt und man kann die Einsatzstelle begehen. 
+                 Weiteres vorgehen nach eigenen Vorgaben.</p>
         </div>
-        <div class="button-container">
+        <div class="camera-container">
             <button id="cameraButton" class="old-style-button">Patienten scannen</button>
         </div>
         <video id="video" autoplay playsinline style="display:none;"></video>
         <canvas id="canvas" style="display:none;"></canvas>
     </main>
-
-    <!-- Einsatzabbruch Button -->
-    <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
 
     <!-- Modal für Menü -->
     <div id="menuModal" class="modal">
@@ -51,11 +47,20 @@
         </div>
     </div>
 
+    <!-- Einsatzabbruch Button -->
+    <a href="index.html" id="einsatzabbruchButton">Einsatzabbruch</a>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const cameraButton = document.getElementById("cameraButton");
+            const video = document.getElementById("video");
+            const canvas = document.getElementById("canvas");
+            const canvasContext = canvas.getContext('2d');
             const menuButton = document.getElementById("menuButton");
             const menuModal = document.getElementById("menuModal");
             const closeButton = document.querySelector(".close");
+
+            let currentStream = null;
 
             // Menü öffnen und schließen
             menuButton.onclick = function() {
@@ -70,30 +75,111 @@
                 }
             };
 
-            // Kamera öffnen (optional: bestehender Code bleibt gleich)
+            // Kamera starten
+            cameraButton.onclick = async function() {
+                try {
+                    // Button ausblenden
+                    cameraButton.style.display = "none";
+
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        alert("Die Kamera-API wird von diesem Gerät nicht unterstützt.");
+                        return;
+                    }
+
+                    // Zugriff auf die Kamera
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "environment" } // Rückkamera bevorzugt
+                    });
+
+                    currentStream = stream; // Stream speichern
+                    video.srcObject = stream;
+
+                    // Video sichtbar machen
+                    video.style.display = "block";
+
+                    video.onloadedmetadata = () => {
+                        video.play();
+                        startQRCodeDetection(); // QR-Code-Scan starten
+                    };
+                } catch (error) {
+                    console.error("Kamera-Zugriff fehlgeschlagen:", error);
+                    alert("Kamera-Zugriff fehlgeschlagen. Bitte Berechtigungen prüfen.");
+                    cameraButton.style.display = "inline-block"; // Button zurücksetzen
+                }
+            };
+
+            // QR-Code-Erkennung
+            function startQRCodeDetection() {
+                const videoWidth = video.videoWidth;
+                const videoHeight = video.videoHeight;
+
+                canvas.width = videoWidth;
+                canvas.height = videoHeight;
+
+                const scanQRCode = () => {
+                    canvasContext.drawImage(video, 0, 0, videoWidth, videoHeight);
+                    const imageData = canvasContext.getImageData(0, 0, videoWidth, videoHeight);
+
+                    // QR-Code mit jsQR erkennen
+                    const code = jsQR(imageData.data, videoWidth, videoHeight, {
+                        inversionAttempts: "dontInvert"
+                    });
+
+                    if (code) {
+                        alert(`QR-Code erkannt: ${code.data}`);
+                        window.location.href = code.data; // Zur URL weiterleiten
+                    } else {
+                        requestAnimationFrame(scanQRCode); // Wiederholen
+                    }
+                };
+
+                requestAnimationFrame(scanQRCode);
+            }
+
+            // Einsatzabbruch Button übernimmt beide Funktionen
+            const einsatzabbruchButton = document.getElementById("einsatzabbruchButton");
+            einsatzabbruchButton.onclick = function(event) {
+                event.preventDefault();  // Verhindert den Standard-Linkverhalten
+
+                if (currentStream) {
+                    // Stream stoppen
+                    const tracks = currentStream.getTracks();
+                    tracks.forEach(track => track.stop());
+                    video.style.display = "none";  // Video stoppen
+                    cameraButton.style.display = "inline-block";  // Zeigt den "Kamera scannen"-Button an
+                    alert("Einsatz abgebrochen und Stream beendet.");
+                }
+
+                // Navigation zur Startseite
+                window.location.href = "index.html";
+            };
         });
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
+    <!-- CSS -->
     <style>
-        /* Grundlayout */
+        /* Basislayout */
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin: 0;
+            padding: 0;
             background-color: #d3d3d3;
         }
 
         header {
             width: 100%;
-            padding: 10px 20px;
+            padding: 20px;
             background-color: #52576e;
             color: white;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            position: relative;
         }
 
         #menuButton {
@@ -102,74 +188,62 @@
             border: none;
             color: white;
             cursor: pointer;
+            position: absolute;
+            left: 20px;
         }
 
         #headerImage {
-            height: 50px;
+            height: 60px;
         }
 
         main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            margin-top: 20px;
+            text-align: center;
             width: 100%;
-            padding: 20px;
         }
 
         .Text-container {
             margin-bottom: 20px;
-            font-size: 1em;
+            margin-left: 20px;
+            font-size: 1.1em;
+            color: white;
             padding: 10px;
             border: 2px solid #f71717;
             border-radius: 10px;
             background-color: #291a1a;
-            color: white;
-            width: 90%;
+            width: 80%;
             max-width: 600px;
-            text-align: center;
+            transition: all 0.3s ease;
         }
 
-        .button-container {
-            margin: 20px 0;
+        .Text-container:hover {
+            background-color: #52576e;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .camera-container {
+            background-color: #d3d3d3;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
         }
 
         #cameraButton {
-            padding: 15px 30px;
-            font-size: 1.2em;
+            padding: 20px 50px;
+            font-size: 1.5em;
             background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
         }
 
         #cameraButton:hover {
             background-color: #2980b9;
         }
 
-        /* Einsatzabbruch Button */
-        #einsatzabbruchButton {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 30px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1em;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        #einsatzabbruchButton:hover {
-            background-color: #c0392b;
-        }
-
-        /* Menümodal */
         #menuModal {
             display: none;
             position: fixed;
@@ -177,67 +251,47 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
         }
 
         .modal-content {
-            background-color: white;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
-            margin: 10% auto;
+            background-color: #fff;
             padding: 20px;
-            text-align: center;
-        }
-
-        .modal-content ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .modal-content ul li {
-            margin: 10px 0;
-        }
-
-        .modal-content ul li a {
-            text-decoration: none;
-            color: #52576e;
-            font-size: 1.1em;
+            border-radius: 5px;
+            width: 50%;
+            margin: 100px auto;
         }
 
         .close {
-            position: absolute;
-            top: 10px;
-            right: 20px;
+            color: #aaa;
             font-size: 1.5em;
+            font-weight: bold;
+            float: right;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
             cursor: pointer;
         }
 
-        /* Flexible Layout */
-        .flex-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
+        #einsatzabbruchButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 1em;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
         }
 
-        @media (min-width: 768px) {
-            main {
-                flex-direction: row;
-                justify-content: center;
-                gap: 20px;
-            }
-
-            .Text-container {
-                flex: 2;
-            }
-
-            .button-container {
-                flex: 1;
-            }
+        #einsatzabbruchButton:hover {
+            background-color: #c0392b;
         }
     </style>
-
 </body>
 </html>
