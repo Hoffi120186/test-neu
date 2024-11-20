@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR-Code Scanner</title>
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -13,14 +14,14 @@
         <img src="Logo entwurf1.jpg" alt="Logo entwurf1" id="headerImage">
     </header>
 
-    <!-- Hauptinhalt -->
+    <!-- Kamera öffnen Hinweis -->
     <main class="flex-container">
         <div class="Text-container">
             <p>VU mit mehreren PKW und Personen. Bei Eintreffen an der Einsatzstelle zeigt sich ein Szenario von mehreren Verletzten. Diese befinden sich in den PKW, können aber auch außerhalb vorgefunden werden. 
             Die Einsatzstelle ist momentan keinen weiteren Gefahren ausgesetzt und kann begangen werden. Weiteres Vorgehen nach eigenen Vorgaben.</p>
         </div>
         <div class="button-container">
-            <button id="cameraButton">Patienten scannen</button>
+            <button id="cameraButton" class="old-style-button">Patienten scannen</button>
         </div>
         <video id="video" autoplay playsinline style="display:none;"></video>
         <canvas id="canvas" style="display:none;"></canvas>
@@ -163,7 +164,80 @@
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
     <style>
-        /* Alle Stile wie in der vorherigen Version */
+        /* Ursprüngliche Styles beibehalten */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: #d3d3d3;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px;
+            background-color: #52576e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        #menuButton {
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            position: absolute;
+            left: 20px;
+        }
+
+        #headerImage {
+            height: 60px;
+        }
+
+        main {
+            margin-top: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .Text-container {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: white;
+            padding: 10px;
+            border: 2px solid #f71717;
+            border-radius: 10px;
+            background-color: #291a1a;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        #cameraButton {
+            padding: 20px 50px;
+            font-size: 1.5em;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #einsatzabbruchButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 30px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+        }
     </style>
 
 </body>
